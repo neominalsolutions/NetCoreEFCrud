@@ -1,0 +1,39 @@
+﻿
+@model CategoryIndexViewModel
+@{
+  var categoryModel = Model.Categories.FirstOrDefault();
+}
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>@Html.Display(categoryModel.CategoryName)</th>
+     @* <th>@Html.DisplayFor(x=> x.Description.Contains("a"))</th>*@
+      <th>Description</th>
+      <th>İşlemler</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var item in Model.Categories)
+    {
+      <tr>
+        <td>
+          @item.CategoryName
+        </td>
+        <td>
+          @item.Description
+        </td>
+        <td>
+          <a class="btn btn-danger" asp-route="deleteCategory" asp-route-id="@item.CategoryId" >Delete </a>
+          <a class="btn btn-primary" asp-route="updateCategory" asp-route-id="@item.CategoryId">Güncelle</a>
+        </td>
+      </tr>
+
+    }
+    
+  
+  </tbody>
+  <tbody>
+
+  </tbody>
+</table>
