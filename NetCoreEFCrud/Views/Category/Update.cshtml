@@ -1,0 +1,10 @@
+﻿
+@model CategoryUpdateInputModel
+
+<form method="post" asp-route="updateCategory">
+  <input class="form-control" asp-for="Name" />
+  <br />
+  <input class="form-control" asp-for="Description" />
+  <br />
+  <input class="btn btn-primary" type="submit" value="Güncelle" />
+</form>

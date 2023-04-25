@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NetCoreEFCrud.Entities;
 using NetCoreEFCrud.Models;
 
@@ -12,6 +13,8 @@ namespace NetCoreEFCrud.Controllers
     {
       this.context = context;
     }
+
+    [HttpGet("kategoriler", Name ="listCategory")]
 
     public IActionResult Index()
     {
@@ -50,6 +53,27 @@ namespace NetCoreEFCrud.Controllers
       return View(model);
     }
 
+    [HttpGet("kategori-guncelle/{id:int}", Name ="updateCategory")]
+    public IActionResult Update(int id)
+    {
+      var entity = context.Categories.Find(id);
+
+      if(entity is null)
+      {
+        return NotFound(); // 404 döndür
+      }
+
+      var model = new CategoryUpdateInputModel
+      {
+        Id = entity.CategoryId,
+        Name = entity.CategoryName,
+        Description = entity.Description
+      };
+
+      return View(model);
+    }
+
+
     [HttpGet("kategori-sil/{id:int}",Name = "deleteCategory")]
     public IActionResult Delete(int id)
     {
@@ -60,20 +84,48 @@ namespace NetCoreEFCrud.Controllers
       }
       else
       {
-        context.Categories.Remove(entity);
-        int result = context.SaveChanges(); // adonet executeNonQuery sorgu execute kısmı, db bu yansıtır.etkilenen kayıt sayısı döner
 
-        if(result > 0)
+        // diposable çalışır.
+        //using (var tra = context.Database.BeginTransaction())
+        //{
+        //  try
+        //  {
+
+        //    tra.Commit();
+        //  }
+        //  catch (Exception)
+        //  {
+        //    tra.Rollback();
+
+        //    throw;
+        //  }
+        //}
+
+
+        try
         {
-          // eğer bir viewden başka bir view veri taşınacak ise bunu mvc de tempdata ile yaparız.
-          // viewbag viewdata ise sadece ilgili actiondan kendi view'une veri taşıyacağımız durumda kullanılır. 
-          TempData["Mesaj"] = "İşlem başarılı";
+          context.Categories.Remove(entity);
+          int result = context.SaveChanges(); // adonet executeNonQuery sorgu execute kısmı, db bu yansıtır.etkilenen kayıt sayısı döner
+
+          if (result > 0)
+          {
+            // eğer bir viewden başka bir view veri taşınacak ise bunu mvc de tempdata ile yaparız.
+            // viewbag viewdata ise sadece ilgili actiondan kendi view'une veri taşıyacağımız durumda kullanılır. 
+            TempData["Mesaj"] = "İşlem başarılı";
+          }
+          else
+          {
+            TempData["Mesaj"] = "işlem başarısız. Tekrar deneyiniz";
+          }
+
         }
-        else
+        catch (DbUpdateException ex)
         {
-          TempData["Mesaj"] = "işlem başarısız. Tekrar deneyiniz";
+          ViewBag.Mesaj = "Ürünü olan kategoriyi silemezsiniz";
+          return View();
         }
 
+       
         // Listeye geri yönlendir
         return RedirectToAction("Index");
       }

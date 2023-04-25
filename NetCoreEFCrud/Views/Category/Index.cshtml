@@ -4,11 +4,12 @@
   var categoryModel = Model.Categories.FirstOrDefault();
 }
 
+<div class="text-success">@TempData["Mesaj"]</div>
+
 <table class="table table-bordered">
   <thead>
     <tr>
-      <th>@Html.Display(categoryModel.CategoryName)</th>
-     @* <th>@Html.DisplayFor(x=> x.Description.Contains("a"))</th>*@
+      <th>@Html.DisplayNameFor(model => model.Categories.FirstOrDefault().CategoryName)</th>
       <th>Description</th>
       <th>İşlemler</th>
     </tr>
