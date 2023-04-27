@@ -37,6 +37,14 @@
   </header>
   <div class="container">
     <main role="main" class="pb-3">
+      
+      @*Netcore ile gelen tag helper yazım şekli*@
+      <partial name="_viewBagMessage" />
+      <partial name="_tempDataMessage" />
+
+      @*Html helper yazım şekli*@
+     @* @Html.Partial("_viewBagMessage")*@
+
       @RenderBody()
     </main>
   </div>

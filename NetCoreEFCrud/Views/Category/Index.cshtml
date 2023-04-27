@@ -4,6 +4,11 @@
   var categoryModel = Model.Categories.FirstOrDefault();
 }
 
+@{
+  // layout ezip başka bir layout üzerinden çalıştırabiliriz.
+  Layout = null;
+}
+
 <div class="text-success">@TempData["Mesaj"]</div>
 
 <table class="table table-bordered">

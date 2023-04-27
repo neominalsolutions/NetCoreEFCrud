@@ -74,6 +74,47 @@ namespace NetCoreEFCrud.Controllers
     }
 
 
+    [HttpPost("kategori-guncelle/{id:int}", Name = "updateCategory")]
+    [ValidateAntiForgeryToken] // form üzerinden form bilgilerinin 3 kişiler tarafından değiştirilmesini engeller. (XSRF/CSRF)
+    public IActionResult Update(CategoryUpdateInputModel model)
+    {
+      
+
+      var entity = context.Categories.Find(model.Id);
+
+      if(entity is not null)
+      {
+        // update işlemi yap
+        entity.CategoryName = model.Name;
+        entity.Description = model.Description;
+        //context.Categories.Update(entity);
+        int result = context.SaveChanges(); // kayıt sonucu dönerse başarılı
+
+        if(result > 0)
+        {
+          TempData["IsSucceded"] = true;
+          TempData["Message"] = "İşlem Başarılı";
+
+          //return Redirect("/kategoriler");
+          return RedirectToRoute("listCategory");
+        }
+        else
+        {
+          ViewBag.IsSucceded = false;
+          ViewBag.Message = "İşlem Hatalı. Tekrar Deneyiniz";
+
+          return View(); // hata mesajını kendi view üzerinde göstersin.
+        }
+
+      }
+      else
+      {
+        return NotFound(); // 404 Sayfa bulunamadı
+      }
+     
+    }
+
+
     [HttpGet("kategori-sil/{id:int}",Name = "deleteCategory")]
     public IActionResult Delete(int id)
     {
@@ -111,17 +152,20 @@ namespace NetCoreEFCrud.Controllers
           {
             // eğer bir viewden başka bir view veri taşınacak ise bunu mvc de tempdata ile yaparız.
             // viewbag viewdata ise sadece ilgili actiondan kendi view'une veri taşıyacağımız durumda kullanılır. 
-            TempData["Mesaj"] = "İşlem başarılı";
+            TempData["Message"] = "İşlem başarılı";
+            TempData["IsSucceded"] = true;
           }
           else
           {
-            TempData["Mesaj"] = "işlem başarısız. Tekrar deneyiniz";
+            TempData["Message"] = "işlem başarısız. Tekrar deneyiniz";
+            TempData["IsSucceded"] = false;
           }
 
         }
         catch (DbUpdateException ex)
         {
-          ViewBag.Mesaj = "Ürünü olan kategoriyi silemezsiniz";
+          ViewBag.Message = "Ürünü olan kategoriyi silemezsiniz";
+          ViewBag.IsSucceded = false;
           return View();
         }
 
