@@ -87,7 +87,7 @@ namespace NetCoreEFCrud.Controllers
         // update işlemi yap
         entity.CategoryName = model.Name;
         entity.Description = model.Description;
-        //context.Categories.Update(entity);
+        context.Categories.Update(entity);
         int result = context.SaveChanges(); // kayıt sonucu dönerse başarılı
 
         if(result > 0)
